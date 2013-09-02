@@ -45,17 +45,17 @@ module.exports = (BasePlugin) ->
         #
         # Surround anything following 'NOTE:' (and two newlines) with a "<div class='note'>...</div>" block
         #
-        opts.content = opts.content.replace(/NOTE:?((.|\s)*?\n\n)/g, "\n\n<div class='note'><p>$1</p></div>\n\n")
+        opts.content = opts.content.replace(/\bNOTE\b:?((.|\s)*?\n\n)/g, "\n\n<div class='note'><p>$1</p></div>\n\n")
 
         #
         # Surround anything following 'INFO:' or 'TIP:' (and two newlines) with a "<div class='info'>...</div>" block
         #
-        opts.content = opts.content.replace(/(INFO|TIP):?((.|\s)*?\n\n)/g, "\n\n<div class='info'><p>$2</p></div>\n\n")
+        opts.content = opts.content.replace(/(\bINFO\b|\bTIP\b):?((.|\s)*?\n\n)/g, "\n\n<div class='info'><p>$2</p></div>\n\n")
 
         #
         # Surround anything following 'WARNING:' (and two newlines) with a "<div class='warning'>...</div>" block
         #
-        opts.content = opts.content.replace(/WARNING:?((.|\s)*?\n\n)/g, "\n\n<div class='warning'><p>$1</p></div>\n\n")
+        opts.content = opts.content.replace(/\bWARNING\b:?((.|\s)*?\n\n)/g, "\n\n<div class='warning'><p>$1</p></div>\n\n")
 
         #
         # Add super-basic support for Markdown tables
