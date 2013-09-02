@@ -58,11 +58,21 @@ module.exports = (BasePlugin) ->
         opts.content = opts.content.replace(/\bWARNING\b:?((.|\s)*?\n\n)/g, "\n\n<div class='warning'><p>$1</p></div>\n\n")
 
         #
-        # Add super-basic support for Markdown tables
+        # Add support for Markdown tables
         #
-        opts.content = opts.content.replace(/\n\|/g, "\n\n<table><tr><th>")
-        opts.content = opts.content.replace(/\|\n/g, "</th></tr></table>\n\n")
-        opts.content = opts.content.replace(/[ ]?\|[ ]?/g, "</th><th>")
+        opts.content = opts.content.replace(/\n{2}\|((?!\n{2})[\s\S])+\|\n{2}/g, (match, p1, offset, total_string) ->
+          #find the first markdown table row and replace it with an html header row
+          match = match.replace(/^[\n]{2}\|(.+)\|\n/g, (match, p1, offset, total_string) ->
+              headers = p1.replace(/[ ]*\|[ ]*/g, "</th><th>").replace(/^\s+|\s+$/g, "")
+              return "<tr><th>" + headers + "</th></tr>"
+          )
+          #for each of the following rows, replace them with html rows
+          match = match.replace(/\|(.+)\|\n/g, (match, p1, offset, total_string) ->
+              cells = p1.replace(/[ ]*\|[ ]*/g, "</td><td>").replace(/^\s+|\s+$/g, "")
+              return "<tr><td>" + cells + "</td></tr>"
+          )
+          return "\n\n<table>" + match + "</table>\n\n"
+        )
 
         #
         # Find the code ranges
